@@ -7,6 +7,15 @@
 
 import SwiftUI
 
+/// 缓存的 Logo 图片
+private let cachedLogoImage: NSImage? = {
+    if let url = Bundle.main.url(forResource: "logo", withExtension: "png"),
+       let image = NSImage(contentsOf: url) {
+        return image
+    }
+    return nil
+}()
+
 @main
 struct CarViewerApp: App {
     @State private var store = AssetStore()
@@ -111,8 +120,8 @@ struct AboutView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            // Logo 区域
-            if let image = NSImage(contentsOfFile: Bundle.main.resourcePath! + "/logo.png") {
+            // Logo 区域 - 使用缓存的图片
+            if let image = cachedLogoImage {
                 Image(nsImage: image)
                     .resizable()
                     .aspectRatio(contentMode: .fit)

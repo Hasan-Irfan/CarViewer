@@ -7,6 +7,36 @@
 
 import SwiftUI
 
+/// 预生成的棋盘格背景图片（用于透明区域显示）
+private let checkeredBackgroundImage: NSImage = {
+    let size: CGFloat = 200
+    let tileSize: CGFloat = 10
+    let image = NSImage(size: NSSize(width: size, height: size))
+    image.lockFocus()
+
+    let lightColor = NSColor.white
+    let darkColor = NSColor(white: 0.9, alpha: 1.0)
+
+    let rows = Int(size / tileSize)
+    let cols = Int(size / tileSize)
+
+    for row in 0..<rows {
+        for col in 0..<cols {
+            let isLight = (row + col) % 2 == 0
+            (isLight ? lightColor : darkColor).setFill()
+            NSBezierPath.fill(NSRect(
+                x: CGFloat(col) * tileSize,
+                y: CGFloat(row) * tileSize,
+                width: tileSize,
+                height: tileSize
+            ))
+        }
+    }
+
+    image.unlockFocus()
+    return image
+}()
+
 struct AssetCell: View {
     @Environment(AssetStore.self) private var store
     let item: RenditionItem
@@ -174,29 +204,10 @@ struct AssetCell: View {
             .foregroundStyle(.tertiary)
     }
 
-    /// 棋盘格背景（用于显示透明区域）
+    /// 棋盘格背景（用于显示透明区域）- 使用预生成的图片
     private var checkeredBackground: some View {
-        Canvas { context, size in
-            let tileSize: CGFloat = 8
-            let rows = Int(ceil(size.height / tileSize))
-            let cols = Int(ceil(size.width / tileSize))
-
-            for row in 0..<rows {
-                for col in 0..<cols {
-                    let isLight = (row + col) % 2 == 0
-                    let rect = CGRect(
-                        x: CGFloat(col) * tileSize,
-                        y: CGFloat(row) * tileSize,
-                        width: tileSize,
-                        height: tileSize
-                    )
-                    context.fill(
-                        Path(rect),
-                        with: .color(isLight ? .white : Color(white: 0.9))
-                    )
-                }
-            }
-        }
+        Image(nsImage: checkeredBackgroundImage)
+            .resizable()
     }
 
     // MARK: - 辅助方法

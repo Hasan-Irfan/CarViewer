@@ -7,6 +7,15 @@
 
 import SwiftUI
 
+/// 缓存的赞赏码图片
+private let cachedDonationImage: NSImage? = {
+    if let url = Bundle.main.url(forResource: "zanshangma", withExtension: "png"),
+       let image = NSImage(contentsOf: url) {
+        return image
+    }
+    return nil
+}()
+
 struct SidebarView: View {
     @Environment(AssetStore.self) private var store
 
@@ -53,8 +62,8 @@ struct SidebarView: View {
 
             // 赞赏区域
             VStack(spacing: 8) {
-                // 赞赏码图片
-                if let image = NSImage(contentsOfFile: Bundle.main.resourcePath! + "/zanshangma.png") {
+                // 赞赏码图片 - 使用缓存的图片
+                if let image = cachedDonationImage {
                     Image(nsImage: image)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
