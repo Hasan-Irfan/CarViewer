@@ -118,8 +118,8 @@ final class AssetStore {
     /// 待导出的资源项
     var pendingExportItems: [RenditionItem] = []
 
-    /// 选择的导出分辨率
-    var exportScaleOption: ExportScaleOption = .all
+    /// 选择的导出分辨率（支持多选）
+    var exportScaleOptions: Set<ExportScaleOption> = [.all]
 
     // MARK: - 加载
 
@@ -256,12 +256,12 @@ final class AssetStore {
     @MainActor
     func confirmExport() {
         showExportOptions = false
-        showExportPanel(for: pendingExportItems, scaleOption: exportScaleOption)
+        showExportPanel(for: pendingExportItems, scaleOptions: exportScaleOptions)
     }
 
     /// 显示导出面板
     @MainActor
-    private func showExportPanel(for items: [RenditionItem], scaleOption: ExportScaleOption) {
+    private func showExportPanel(for items: [RenditionItem], scaleOptions: Set<ExportScaleOption>) {
         let panel = NSOpenPanel()
         panel.canChooseFiles = false
         panel.canChooseDirectories = true
@@ -270,9 +270,70 @@ final class AssetStore {
 
         guard panel.runModal() == .OK, let directory = panel.url else { return }
 
-        // 根据分辨率选项筛选资源
-        let filteredItems = filterItemsForExport(items, scaleOption: scaleOption)
-        startExport(items: filteredItems, to: directory)
+        // 为每种选中的分辨率创建子目录并导出
+        Task {
+            await performMultiScaleExport(items: items, to: directory, scaleOptions: scaleOptions)
+        }
+    }
+
+    /// 执行多分辨率导出（每种分辨率导出到单独子目录）
+    @MainActor
+    private func performMultiScaleExport(items: [RenditionItem], to directory: URL, scaleOptions: Set<ExportScaleOption>) async {
+        // 如果只选了一个选项，直接导出到根目录
+        if scaleOptions.count == 1, let option = scaleOptions.first {
+            let filteredItems = filterItemsForExport(items, scaleOption: option)
+            startExport(items: filteredItems, to: directory)
+            return
+        }
+
+        // 多选情况：每种分辨率导出到单独子目录
+        var allItemsToExport: [(item: RenditionItem, directory: URL)] = []
+
+        for option in scaleOptions.sorted(by: { $0.rawValue < $1.rawValue }) {
+            let filteredItems = filterItemsForExport(items, scaleOption: option)
+            guard !filteredItems.isEmpty else { continue }
+
+            // 创建子目录
+            let subDirName = option.directoryName
+            let subDir = directory.appendingPathComponent(subDirName)
+
+            do {
+                try FileManager.default.createDirectory(at: subDir, withIntermediateDirectories: true)
+            } catch {
+                print("Failed to create directory \(subDirName): \(error)")
+                continue
+            }
+
+            for item in filteredItems {
+                allItemsToExport.append((item, subDir))
+            }
+        }
+
+        guard !allItemsToExport.isEmpty else { return }
+
+        // 开始导出
+        isExporting = true
+        exportProgress = 0
+        exportTotal = allItemsToExport.count
+        exportCompleted = 0
+
+        for (index, (item, subDir)) in allItemsToExport.enumerated() {
+            do {
+                try await ExportService.shared.exportItem(item, to: subDir)
+            } catch {
+                print("Export failed for \(item.name): \(error)")
+            }
+
+            exportCompleted = index + 1
+            exportProgress = Double(exportCompleted) / Double(exportTotal)
+
+            if exportCompleted % 10 == 0 {
+                try? await Task.sleep(for: .milliseconds(50))
+            }
+        }
+
+        isExporting = false
+        NSWorkspace.shared.open(directory)
     }
 
     /// 根据导出选项筛选资源

@@ -136,6 +136,18 @@ enum ExportScaleOption: String, CaseIterable, Identifiable {
         }
     }
 
+    /// 导出子目录名称
+    var directoryName: String {
+        switch self {
+        case .all: return "All"
+        case .scale1x: return "@1x"
+        case .scale2x: return "@2x"
+        case .scale3x: return "@3x"
+        case .scale2xAnd3x: return "@2x+@3x"
+        case .highest: return "Highest"
+        }
+    }
+
     /// 判断资源是否匹配此导出选项
     func matches(scale: CGFloat) -> Bool {
         switch self {

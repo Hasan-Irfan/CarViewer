@@ -7,15 +7,6 @@
 
 import SwiftUI
 
-/// 缓存的 Logo 图片
-private let cachedLogoImage: NSImage? = {
-    if let url = Bundle.main.url(forResource: "logo", withExtension: "png"),
-       let image = NSImage(contentsOf: url) {
-        return image
-    }
-    return nil
-}()
-
 @main
 struct CarViewerApp: App {
     @State private var store = AssetStore()
@@ -118,10 +109,19 @@ struct AboutView: View {
         Locale.current.language.languageCode?.identifier == "zh"
     }
 
+    /// 加载 Logo 图片
+    private var logoImage: NSImage? {
+        if let url = Bundle.main.url(forResource: "logo", withExtension: "png"),
+           let image = NSImage(contentsOf: url) {
+            return image
+        }
+        return nil
+    }
+
     var body: some View {
         VStack(spacing: 20) {
-            // Logo 区域 - 使用缓存的图片
-            if let image = cachedLogoImage {
+            // Logo 区域
+            if let image = logoImage {
                 Image(nsImage: image)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -152,7 +152,7 @@ struct AboutView: View {
                     .font(.title)
                     .fontWeight(.bold)
 
-                Text("Version 1.0.0")
+                Text("Version 1.0.1")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -167,19 +167,19 @@ struct AboutView: View {
 
             Divider()
 
-            // 链接区域
+            // 链接区域 - 顺序：邮箱 → Git 仓库
             VStack(spacing: 12) {
-                Link(destination: URL(string: "https://github.com/xiaolajiaoyyds/CarViewer")!) {
-                    HStack {
-                        Image(systemName: "link")
-                        Text("GitHub")
-                    }
-                }
-
                 Link(destination: URL(string: "mailto:xiaolajiaoyyds@gmail.com")!) {
                     HStack {
                         Image(systemName: "envelope")
                         Text("xiaolajiaoyyds@gmail.com")
+                    }
+                }
+
+                Link(destination: URL(string: "https://github.com/xiaolajiaoyyds/CarViewer")!) {
+                    HStack {
+                        Image(systemName: "link")
+                        Text("github.com/xiaolajiaoyyds/CarViewer")
                     }
                 }
             }
@@ -188,7 +188,7 @@ struct AboutView: View {
             Divider()
 
             // 版权信息
-            Text("© 2026 xiaolajiaoyyds. MIT License.")
+            Text("© 2026 xiaolajiaoyyds. BSD-2-Clause License.")
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
 
@@ -199,7 +199,7 @@ struct AboutView: View {
             .keyboardShortcut(.cancelAction)
         }
         .padding(30)
-        .frame(width: 360)
+        .frame(width: 400)
     }
 }
 
@@ -217,8 +217,8 @@ struct SettingsView: View {
             }
 
             Section(isChinese ? "关于" : "About") {
-                LabeledContent("Version", value: "1.0.0")
-                LabeledContent("GitHub", value: "xiaolajiaoyyds/CarViewer")
+                LabeledContent("Version", value: "1.0.1")
+                LabeledContent("GitHub", value: "github.com/xiaolajiaoyyds/CarViewer")
                 LabeledContent(isChinese ? "作者" : "Author", value: "xiaolajiaoyyds")
             }
         }

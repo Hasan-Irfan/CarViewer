@@ -2,7 +2,7 @@
 //  ExportOptionsSheet.swift
 //  CarViewer
 //
-//  导出选项面板 - 选择导出分辨率
+//  导出选项面板 - 选择导出分辨率（支持多选）
 //
 
 import SwiftUI
@@ -13,6 +13,11 @@ struct ExportOptionsSheet: View {
 
     private var isChinese: Bool {
         Locale.current.language.languageCode?.identifier == "zh"
+    }
+
+    /// 是否有选中的选项
+    private var hasSelection: Bool {
+        !store.exportScaleOptions.isEmpty
     }
 
     var body: some View {
@@ -38,43 +43,68 @@ struct ExportOptionsSheet: View {
             Divider()
 
             // 内容区
-            VStack(alignment: .leading, spacing: 20) {
-                // 待导出信息
-                HStack {
-                    Image(systemName: "photo.stack")
-                        .font(.title2)
-                        .foregroundStyle(.blue)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(isChinese ? "待导出资源" : "Assets to Export")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                        Text("\(store.pendingExportItems.count)")
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    // 待导出信息
+                    HStack {
+                        Image(systemName: "photo.stack")
                             .font(.title2)
-                            .fontWeight(.semibold)
+                            .foregroundStyle(.blue)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(isChinese ? "待导出资源" : "Assets to Export")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                            Text("\(store.pendingExportItems.count)")
+                                .font(.title2)
+                                .fontWeight(.semibold)
+                        }
+                        Spacer()
                     }
-                    Spacer()
+                    .padding()
+                    .background(Color.blue.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                    // 分辨率选择（多选）
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack {
+                            Text(isChinese ? "选择导出分辨率" : "Select Export Resolutions")
+                                .font(.headline)
+                            Spacer()
+                            Text(isChinese ? "可多选" : "Multi-select")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+
+                        // 提示：多选时会分目录导出
+                        if store.exportScaleOptions.count > 1 {
+                            HStack(spacing: 6) {
+                                Image(systemName: "folder.badge.plus")
+                                    .foregroundStyle(.orange)
+                                Text(isChinese
+                                    ? "多选时，每种分辨率将导出到单独的子目录"
+                                    : "When multi-selecting, each resolution exports to a separate subdirectory")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .background(Color.orange.opacity(0.1))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        }
+
+                        ForEach(ExportScaleOption.allCases) { option in
+                            ExportOptionCheckboxRow(
+                                option: option,
+                                isSelected: store.exportScaleOptions.contains(option),
+                                action: {
+                                    toggleOption(option)
+                                }
+                            )
+                        }
+                    }
                 }
                 .padding()
-                .background(Color.blue.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-
-                // 分辨率选择
-                VStack(alignment: .leading, spacing: 12) {
-                    Text(isChinese ? "选择导出分辨率" : "Select Export Resolution")
-                        .font(.headline)
-
-                    ForEach(ExportScaleOption.allCases) { option in
-                        ExportOptionRow(
-                            option: option,
-                            isSelected: store.exportScaleOption == option,
-                            action: { store.exportScaleOption = option }
-                        )
-                    }
-                }
-
-                Spacer()
             }
-            .padding()
 
             Divider()
 
@@ -87,6 +117,15 @@ struct ExportOptionsSheet: View {
 
                 Spacer()
 
+                // 显示选中数量
+                if store.exportScaleOptions.count > 0 {
+                    Text(isChinese
+                        ? "已选 \(store.exportScaleOptions.count) 项"
+                        : "\(store.exportScaleOptions.count) selected")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
                 Button {
                     store.confirmExport()
                 } label: {
@@ -97,15 +136,32 @@ struct ExportOptionsSheet: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.defaultAction)
+                .disabled(!hasSelection)
             }
             .padding()
         }
-        .frame(width: 480, height: 520)
+        .frame(width: 500, height: 580)
+    }
+
+    /// 切换选项的选中状态
+    private func toggleOption(_ option: ExportScaleOption) {
+        if store.exportScaleOptions.contains(option) {
+            store.exportScaleOptions.remove(option)
+        } else {
+            // 如果选择了"全部"，清除其他选项
+            if option == .all {
+                store.exportScaleOptions = [.all]
+            } else {
+                // 如果选择了其他选项，移除"全部"
+                store.exportScaleOptions.remove(.all)
+                store.exportScaleOptions.insert(option)
+            }
+        }
     }
 }
 
-// MARK: - 导出选项行
-struct ExportOptionRow: View {
+// MARK: - 导出选项行（复选框样式）
+struct ExportOptionCheckboxRow: View {
     let option: ExportScaleOption
     let isSelected: Bool
     let action: () -> Void
@@ -113,8 +169,8 @@ struct ExportOptionRow: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: 12) {
-                // 选中指示器
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                // 复选框
+                Image(systemName: isSelected ? "checkmark.square.fill" : "square")
                     .font(.title2)
                     .foregroundStyle(isSelected ? .blue : .secondary)
 
@@ -138,6 +194,17 @@ struct ExportOptionRow: View {
                 }
 
                 Spacer()
+
+                // 导出目录名预览
+                if isSelected {
+                    Text(option.directoryName)
+                        .font(.caption)
+                        .foregroundStyle(.blue)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color.blue.opacity(0.1))
+                        .clipShape(Capsule())
+                }
             }
             .padding(.vertical, 10)
             .padding(.horizontal, 12)

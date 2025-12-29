@@ -101,17 +101,17 @@ struct SidebarView: View {
                 .buttonStyle(.borderedProminent)
                 .disabled(store.allRenditions.isEmpty)
 
-                // 项目信息 - 单行紧凑布局
+                // 项目信息 - 简洁显示
                 HStack(spacing: 12) {
-                    Text("v1.0")
+                    Text("v1.0.2")
                         .font(.caption2)
-
-                    Link(destination: URL(string: "https://github.com/xiaolajiaoyyds/CarViewer")!) {
-                        Image(systemName: "link")
-                    }
 
                     Link(destination: URL(string: "mailto:xiaolajiaoyyds@gmail.com")!) {
                         Image(systemName: "envelope")
+                    }
+
+                    Link(destination: URL(string: "https://github.com/xiaolajiaoyyds/CarViewer")!) {
+                        Image(systemName: "link")
                     }
                 }
                 .font(.caption)

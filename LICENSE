@@ -1,25 +1,77 @@
-BSD 2-Clause License
+CarViewer Non-Commercial License
 
-Copyright (c) 2026, xiaolajiaoyyds
+Copyright (c) 2025, xiaolajiaoyyds
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
+This software and associated documentation files (the "Software") are provided
+for non-commercial use only, subject to the following conditions:
 
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
+1. NON-COMMERCIAL USE ONLY
+   You may use, copy, modify, and distribute the Software for non-commercial
+   purposes only. "Non-commercial" means personal use, educational use,
+   research use, or use by non-profit organizations.
 
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
+2. COMMERCIAL USE PROHIBITED
+   You may NOT use the Software for any commercial purpose, including but not
+   limited to:
+   - Selling the Software or any derivative works
+   - Using the Software in a commercial product or service
+   - Using the Software to generate revenue directly or indirectly
+   - Using the Software in a business environment for profit-making activities
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+3. ATTRIBUTION
+   Redistributions of source code must retain the above copyright notice and
+   this license. Redistributions in binary form must reproduce the above
+   copyright notice in the documentation or other materials provided.
+
+4. NO WARRANTY AND DISCLAIMER
+   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS".
+   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+   DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+   FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, PUNITIVE, OR CONSEQUENTIAL
+   DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+   SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+   CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+   OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+5. COMMERCIAL LICENSING
+   For commercial use, please contact the author at xiaolajiaoyyds@gmail.com
+   to obtain a commercial license.
+
+---
+
+CarViewer 非商业许可证
+
+版权所有 (c) 2025, xiaolajiaoyyds
+保留所有权利。
+
+本软件及其相关文档（以下简称"软件"）仅供非商业用途使用，须遵守以下条款：
+
+1. 仅限非商业使用
+   您可以出于非商业目的使用、复制、修改和分发本软件。"非商业"指个人使用、
+   教育使用、研究使用或非营利组织使用。
+
+2. 禁止商业使用
+   您不得将本软件用于任何商业目的，包括但不限于：
+   - 销售本软件或任何衍生作品
+   - 在商业产品或服务中使用本软件
+   - 使用本软件直接或间接产生收入
+   - 在商业环境中将本软件用于营利活动
+
+3. 署名要求
+   源代码的再分发必须保留上述版权声明和本许可证。二进制形式的再分发必须在
+   文档或其他提供的材料中包含上述版权声明。
+
+4. 免责声明
+   本软件由版权所有者和贡献者"按原样"提供。任何明示或默示的保证，包括但不
+   限于默示的适销性和特定用途适用性保证均予以免责。版权所有者或贡献者在任何
+   情况下均不承担任何责任，包括任何直接、间接、附带、特殊、惩罚性或后果性
+   损害赔偿（包括但不限于采购替代商品或服务；使用、数据或利润损失；或业务
+   中断），无论基于何种责任理论，无论是合同责任、严格责任，或因使用而以任何
+   方式引起的侵权行为（包括过失或其他侵权行为），即使已被告知可能存在此类
+   损害，也不对本软件承担任何责任。
+
+5. 商业许可
+   如需商业使用，请联系作者 xiaolajiaoyyds@gmail.com 获取商业许可。
