@@ -38,6 +38,11 @@ final class AssetStore {
             result = result.filter { $0.type == filterType }
         }
 
+        // 文件夹筛选
+        if let folder = filterFolder {
+            result = result.filter { $0.elementName == folder }
+        }
+
         // 分辨率筛选
         if let scaleValue = filterScale.scaleValue {
             if scaleValue == 0 {
@@ -80,6 +85,85 @@ final class AssetStore {
 
     /// 分辨率筛选
     var filterScale: ScaleFilter = .all
+
+    /// 文件夹筛选（nil 表示不筛选）
+    var filterFolder: String?
+
+    // MARK: - 文件夹列表
+
+    /// 所有文件夹名称（按字母排序，去重）
+    var allFolders: [String] {
+        let folders = Set(allRenditions.map { $0.elementName })
+        return folders.sorted { $0.localizedCompare($1) == .orderedAscending }
+    }
+
+    /// 是否展开文件夹列表
+    var isFoldersExpanded: Bool = false
+
+    /// 文件夹搜索文本
+    var folderSearchText: String = ""
+
+    /// 筛选后的文件夹列表
+    var filteredFolders: [String] {
+        if folderSearchText.isEmpty {
+            return allFolders
+        }
+        let query = folderSearchText.lowercased()
+        return allFolders.filter { $0.lowercased().contains(query) }
+    }
+
+    /// 是否展开分类列表
+    var isCategoriesExpanded: Bool = true
+
+    /// 选中的文件夹集合（用于多选导出）
+    var selectedFolders: Set<String> = []
+
+    /// 切换文件夹选中状态
+    @MainActor
+    func toggleFolderSelection(_ folder: String) {
+        if selectedFolders.contains(folder) {
+            selectedFolders.remove(folder)
+        } else {
+            selectedFolders.insert(folder)
+        }
+    }
+
+    /// 清除文件夹多选
+    @MainActor
+    func clearFolderSelection() {
+        selectedFolders.removeAll()
+    }
+
+    /// 全选文件夹
+    @MainActor
+    func selectAllFolders() {
+        selectedFolders = Set(filteredFolders)
+    }
+
+    /// 反选文件夹
+    @MainActor
+    func invertFolderSelection() {
+        let allSet = Set(filteredFolders)
+        selectedFolders = allSet.subtracting(selectedFolders)
+    }
+
+    /// 导出选中的多个文件夹（保留路径结构）
+    @MainActor
+    func exportSelectedFolders() {
+        guard !selectedFolders.isEmpty else { return }
+
+        // 收集选中文件夹的所有资源
+        let items = allRenditions.filter { selectedFolders.contains($0.elementName) }
+        guard !items.isEmpty else { return }
+
+        // 使用特殊标记表示需要按文件夹路径导出
+        pendingExportItems = items
+        pendingExportWithFolderStructure = true
+        showExportOptions = true
+    }
+
+    /// 是否按文件夹结构导出
+    var pendingExportWithFolderStructure: Bool = false
 
     // MARK: - 视图状态
 
@@ -252,16 +336,33 @@ final class AssetStore {
         showExportOptions = true
     }
 
+    /// 导出指定文件夹的资源
+    @MainActor
+    func exportFolder(_ folder: String) {
+        let items = allRenditions.filter { $0.elementName == folder }
+        guard !items.isEmpty else { return }
+        pendingExportItems = items
+        showExportOptions = true
+    }
+
+    /// 清除文件夹筛选
+    @MainActor
+    func clearFolderFilter() {
+        filterFolder = nil
+    }
+
     /// 确认导出（从选项面板调用）
     @MainActor
     func confirmExport() {
         showExportOptions = false
-        showExportPanel(for: pendingExportItems, scaleOptions: exportScaleOptions)
+        let withFolderStructure = pendingExportWithFolderStructure
+        pendingExportWithFolderStructure = false
+        showExportPanel(for: pendingExportItems, scaleOptions: exportScaleOptions, withFolderStructure: withFolderStructure)
     }
 
     /// 显示导出面板
     @MainActor
-    private func showExportPanel(for items: [RenditionItem], scaleOptions: Set<ExportScaleOption>) {
+    private func showExportPanel(for items: [RenditionItem], scaleOptions: Set<ExportScaleOption>, withFolderStructure: Bool = false) {
         let panel = NSOpenPanel()
         panel.canChooseFiles = false
         panel.canChooseDirectories = true
@@ -272,8 +373,73 @@ final class AssetStore {
 
         // 为每种选中的分辨率创建子目录并导出
         Task {
-            await performMultiScaleExport(items: items, to: directory, scaleOptions: scaleOptions)
+            if withFolderStructure {
+                await performFolderStructureExport(items: items, to: directory, scaleOptions: scaleOptions)
+            } else {
+                await performMultiScaleExport(items: items, to: directory, scaleOptions: scaleOptions)
+            }
         }
+    }
+
+    /// 按文件夹结构导出（保留 elementName 路径）
+    @MainActor
+    private func performFolderStructureExport(items: [RenditionItem], to directory: URL, scaleOptions: Set<ExportScaleOption>) async {
+        var allItemsToExport: [(item: RenditionItem, directory: URL)] = []
+
+        // 按 elementName 分组
+        let groupedItems = Dictionary(grouping: items) { $0.elementName }
+
+        for option in scaleOptions.sorted(by: { $0.rawValue < $1.rawValue }) {
+            for (folderName, folderItems) in groupedItems {
+                let filteredItems = filterItemsForExport(folderItems, scaleOption: option)
+                guard !filteredItems.isEmpty else { continue }
+
+                // 构建目录路径：基础目录 / [分辨率子目录] / 文件夹名
+                var targetDir = directory
+                if scaleOptions.count > 1 {
+                    targetDir = targetDir.appendingPathComponent(option.directoryName)
+                }
+                targetDir = targetDir.appendingPathComponent(folderName)
+
+                do {
+                    try FileManager.default.createDirectory(at: targetDir, withIntermediateDirectories: true)
+                } catch {
+                    print("Failed to create directory \(folderName): \(error)")
+                    continue
+                }
+
+                for item in filteredItems {
+                    allItemsToExport.append((item, targetDir))
+                }
+            }
+        }
+
+        guard !allItemsToExport.isEmpty else { return }
+
+        // 开始导出
+        isExporting = true
+        exportProgress = 0
+        exportTotal = allItemsToExport.count
+        exportCompleted = 0
+
+        for (index, (item, targetDir)) in allItemsToExport.enumerated() {
+            do {
+                try await ExportService.shared.exportItem(item, to: targetDir)
+            } catch {
+                print("Export failed for \(item.name): \(error)")
+            }
+
+            exportCompleted = index + 1
+            exportProgress = Double(exportCompleted) / Double(exportTotal)
+
+            if exportCompleted % 10 == 0 {
+                try? await Task.sleep(for: .milliseconds(50))
+            }
+        }
+
+        isExporting = false
+        selectedFolders.removeAll()
+        NSWorkspace.shared.open(directory)
     }
 
     /// 执行多分辨率导出（每种分辨率导出到单独子目录）
