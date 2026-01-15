@@ -20,7 +20,7 @@
 
 @media(max-width: 400px) {
     #container2{
-        padding-block: 10rem;
+        padding-block: 2rem;
     }
     
 }
@@ -144,14 +144,14 @@
     }
 
     #container3{
-        padding-bottom: 7rem;
+        padding-bottom: 27rem;
     }
    
    .pimg3{
     height: 171px;
    }
    .section {
-    padding-top: 21.5rem;
+    padding-top: 3.5rem;
     
     }
     .row {
